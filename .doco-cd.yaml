@@ -1,0 +1,24 @@
+name: ollama
+working_dir: docker/ollama
+compose_files:
+  - docker-compose.yaml
+---
+name: open-webui
+working_dir: docker/open-webui
+compose_files:
+  - docker-compose.yaml
+---
+name: piper
+working_dir: docker/piper
+compose_files:
+  - docker-compose.yaml
+---
+name: comfyui
+working_dir: docker/comfyui
+compose_files:
+  - docker-compose.yaml
+---
+name: whisper
+working_dir: docker/whisper
+compose_files:
+  - docker-compose.yaml

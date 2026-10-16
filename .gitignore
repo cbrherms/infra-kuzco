@@ -1,0 +1,10 @@
+*.retry
+.ansible/
+.env
+*.vault-pass
+keys.txt
+*.keys.txt
+secrets.env
+.mise.local.toml
+mise.local.toml
+.private/

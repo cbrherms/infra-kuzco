@@ -1,0 +1,26 @@
+services:
+  comfyui:
+    build:
+      context: .
+    image: kuzco/comfyui:local
+    container_name: comfyui
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - "8188:8188"
+    volumes:
+      - /srv/ai/comfyui/models:/opt/ComfyUI/models
+      - /srv/ai/comfyui/output:/opt/ComfyUI/output
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

@@ -1,0 +1,10 @@
+---
+admin_user: "{{ lookup('ansible.builtin.env', 'ANSIBLE_ADMIN_USER') | default('ubuntu', true) }}"
+admin_ssh_key: "{{ lookup('ansible.builtin.env', 'ANSIBLE_ADMIN_SSH_KEY') | default('', true) }}"
+
+nvidia_driver_package: nvidia-driver-580-open
+
+doco_cd_version: 0.127.0
+infra_repo_url: https://github.com/cbrherms/infra-kuzco.git
+infra_repo_branch: main
+doco_cd_poll_interval: 120

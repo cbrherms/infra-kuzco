@@ -1,0 +1,9 @@
+---
+- name: Provision kuzco AI host
+  hosts: kuzco
+  become: true
+  roles:
+    - common
+    - gpu
+    - docker
+    - dococd

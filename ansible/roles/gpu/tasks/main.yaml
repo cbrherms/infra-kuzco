@@ -1,0 +1,35 @@
+---
+- name: Install kernel headers and NVIDIA driver
+  ansible.builtin.apt:
+    name:
+      - "linux-headers-{{ ansible_kernel }}"
+      - "{{ nvidia_driver_package }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Blacklist nouveau
+  ansible.builtin.copy:
+    dest: /etc/modprobe.d/blacklist-nouveau.conf
+    mode: "0644"
+    content: |
+      blacklist nouveau
+      options nouveau modeset=0
+  notify: Update initramfs
+
+- name: Enable NVIDIA persistence daemon
+  ansible.builtin.systemd:
+    name: nvidia-persistenced
+    enabled: true
+    state: started
+  failed_when: false
+
+- name: Check whether a reboot is pending
+  ansible.builtin.stat:
+    path: /var/run/reboot-required
+  register: reboot_required
+
+- name: Report pending reboot
+  ansible.builtin.debug:
+    msg: "Reboot kuzco to load the NVIDIA driver."
+  when: reboot_required.stat.exists

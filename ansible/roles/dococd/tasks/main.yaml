@@ -1,0 +1,43 @@
+---
+- name: Create Doco-CD directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0750"
+  loop:
+    - /etc/doco-cd
+    - /var/lib/doco-cd
+
+- name: Create persistent model/cache directories for AI services
+  ansible.builtin.file:
+    path: "/srv/ai/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - ollama
+    - open-webui
+    - whisper
+    - piper
+    - comfyui/models
+    - comfyui/output
+
+- name: Configure Doco-CD
+  ansible.builtin.template:
+    src: doco-cd.env.j2
+    dest: /etc/doco-cd/doco-cd.env
+    mode: "0600"
+  notify: Restart doco-cd
+
+- name: Install Doco-CD unit
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../systemd/doco-cd.service"
+    dest: /etc/systemd/system/doco-cd.service
+    mode: "0644"
+  notify: Restart doco-cd
+
+- name: Enable Doco-CD
+  ansible.builtin.systemd:
+    name: doco-cd.service
+    enabled: true
+    state: started
+    daemon_reload: true

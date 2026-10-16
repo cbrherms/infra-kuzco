@@ -1,0 +1,18 @@
+# Wyoming-protocol text-to-speech for Home Assistant Assist (CPU is fast enough)
+services:
+  piper:
+    image: rhasspy/wyoming-piper:2.5.2
+    container_name: piper
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - "10200:10200"
+    command: --voice en_US-lessac-medium
+    volumes:
+      - /srv/ai/piper:/data

@@ -1,0 +1,6 @@
+---
+- name: Restart doco-cd
+  ansible.builtin.systemd:
+    name: doco-cd.service
+    state: restarted
+    daemon_reload: true

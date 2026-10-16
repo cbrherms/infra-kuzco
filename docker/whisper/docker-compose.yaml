@@ -1,0 +1,28 @@
+# Wyoming-protocol faster-whisper for Home Assistant Assist (GPU build)
+services:
+  whisper:
+    image: ghcr.io/linuxserver/faster-whisper:gpu-v3.8.1-ls71
+    container_name: whisper
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - "10300:10300"
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: Etc/UTC
+      WHISPER_MODEL: small-int8
+      WHISPER_LANG: en
+    volumes:
+      - /srv/ai/whisper:/config
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

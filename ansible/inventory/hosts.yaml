@@ -1,0 +1,8 @@
+---
+all:
+  children:
+    ai:
+      hosts:
+        kuzco:
+          ansible_host: "{{ lookup('ansible.builtin.env', 'KUZCO_HOST', default='kuzco.local') }}"
+          ansible_user: "{{ lookup('ansible.builtin.env', 'KUZCO_USER', default='ubuntu') }}"

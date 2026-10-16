@@ -1,0 +1,27 @@
+[Unit]
+Description=Doco-CD GitOps controller (redeploys docker compose stacks on repo change)
+Wants=network-online.target
+After=network-online.target docker.service
+Requires=docker.service
+ConditionPathExists=/etc/doco-cd/age.key
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=10
+SyslogIdentifier=doco-cd
+EnvironmentFile=/etc/doco-cd/doco-cd.env
+ExecStartPre=-/usr/bin/docker rm -f doco-cd
+ExecStart=/usr/bin/docker run --rm --name doco-cd \
+  --log-driver=journald --log-opt tag=doco-cd \
+  --env-file /etc/doco-cd/doco-cd.env \
+  -e SOPS_AGE_KEY_FILE=/run/secrets/sops_age_key \
+  -v /etc/doco-cd/age.key:/run/secrets/sops_age_key:ro \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v /var/lib/doco-cd:/data \
+  -p 127.0.0.1:9120:80 \
+  ghcr.io/kimdre/doco-cd:${DOCO_CD_VERSION}
+ExecStop=/usr/bin/docker stop doco-cd
+
+[Install]
+WantedBy=multi-user.target
