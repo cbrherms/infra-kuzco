@@ -57,6 +57,7 @@ just hooks                   # pre-commit lint + SOPS-encryption check
 | comfyui | 8188 | Built from `docker/comfyui/Dockerfile` |
 | whisper | 10300 | Wyoming faster-whisper STT (GPU) for Home Assistant |
 | piper | 10200 | Wyoming TTS (CPU) for Home Assistant |
+| dozzle | 8080 | Live logs for Docker containers |
 
 For the 12 GB Nvidia card, Ollama is limited to one loaded model and unloads it after 10 minutes idle.
 Continue connects to Ollama at `http://kuzco:11434`; Home Assistant uses its Ollama integration and Wyoming

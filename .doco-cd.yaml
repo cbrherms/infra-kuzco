@@ -22,3 +22,8 @@ name: whisper
 working_dir: docker/whisper
 compose_files:
   - docker-compose.yaml
+---
+name: dozzle
+working_dir: docker/dozzle
+compose_files:
+  - docker-compose.yaml
