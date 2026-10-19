@@ -9,7 +9,8 @@ repos:
       - id: yamllint
         name: yamllint
         entry: yamllint
-        language: system
+        language: python
+        additional_dependencies: [yamllint==1.38.0]
         types: [yaml]
         exclude: '\.enc\.'
       - id: shellcheck
