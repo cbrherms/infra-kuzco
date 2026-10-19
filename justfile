@@ -10,7 +10,7 @@ default:
 # Run bootstrap.sh on the endpoint over SSH (first run only)
 bootstrap:
     {{ssh}} 'sudo bash -s' < bootstrap.sh
-    just provision
+    just provision --ask-pass
 
 # Apply the Ansible playbook from this workstation
 provision *args:

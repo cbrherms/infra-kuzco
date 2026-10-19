@@ -29,12 +29,12 @@ just hooks                   # pre-commit lint + SOPS-encryption check
 2. Run `just age-init` once and keep a backup of `$SOPS_AGE_KEY_FILE` in 1Password.
 3. Create secrets locally and encrypt with `just encrypt` before pushing, e.g. `docker/open-webui/secrets.enc.env` with `WEBUI_SECRET_KEY`.
 4. Push `.sops.yaml` and encrypted secrets before bootstrapping; Doco-CD reads them from GitHub.
-5. `just bootstrap` prepares Python on the endpoint, then provisions it from the workstation using the local overrides. `just secrets` installs the age key and starts Doco-CD.
+5. `just bootstrap` prepares Python on the endpoint, then prompts for the SSH password during initial provisioning. Ansible installs the configured key and disables SSH password login. Later runs use `just provision` without `--ask-pass`. `just secrets` installs the age key and starts Doco-CD.
 6. If bootstrap reports a pending reboot, reboot before checking the GPU with `just gpu-info`.
 
 | Command | Action |
 |---|---|
-| `just bootstrap` | Run `bootstrap.sh` on the endpoint over SSH |
+| `just bootstrap` | Run `bootstrap.sh` and perform initial provisioning over SSH |
 | `just provision` | `ansible-playbook ansible/site.yaml` from the workstation |
 | `just deploy` | Restart Doco-CD manually; normally its poll is enough |
 | `just deploy-compose ollama` | Deploy one stack directly over `DOCKER_HOST=ssh://...` |
