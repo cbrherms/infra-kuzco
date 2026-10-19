@@ -25,7 +25,7 @@ mise install                 # just, ansible, docker CLI, age, sops, linters, et
 just hooks                   # pre-commit lint + SOPS-encryption check
 ```
 
-1. Create and set local connection and admin override values in `.mise.local.toml`. Set `ANSIBLE_ADMIN_SSH_KEY` to desired public key; SSH key auth is required.
+1. Create and set local connection and admin override values in `.mise.local.toml`. Set `ANSIBLE_ADMIN_SSH_KEY` to desired public key; SSH key auth is required. `DOCKER_HOST` also needs copying over due to variable rendering order.
 2. Run `just age-init` once and keep a backup of `$SOPS_AGE_KEY_FILE` in 1Password.
 3. Create secrets locally and encrypt with `just encrypt` before pushing, e.g. `docker/open-webui/secrets.enc.env` with `WEBUI_SECRET_KEY`.
 4. Push `.sops.yaml` and encrypted secrets before bootstrapping; Doco-CD reads them from GitHub.
