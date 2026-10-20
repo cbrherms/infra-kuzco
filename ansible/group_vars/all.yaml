@@ -8,3 +8,7 @@ doco_cd_version: 0.127.0
 infra_repo_url: https://github.com/cbrherms/infra-kuzco.git
 infra_repo_branch: main
 doco_cd_poll_interval: 120
+
+ai_data_device: "{{ lookup('ansible.builtin.env', 'ANSIBLE_AI_DATA_DEVICE') | default('', true) }}"
+ai_data_label: ai-data
+ai_data_mount: /srv/ai

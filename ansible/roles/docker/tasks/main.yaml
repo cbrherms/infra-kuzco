@@ -47,13 +47,13 @@
 
 - name: Check whether the nvidia runtime is registered
   ansible.builtin.command: grep -q nvidia /etc/docker/daemon.json
-  register: nvidia_runtime
+  register: docker_nvidia_runtime
   changed_when: false
   failed_when: false
 
 - name: Register nvidia runtime with Docker
   ansible.builtin.command: nvidia-ctk runtime configure --runtime=docker
-  when: nvidia_runtime.rc != 0
+  when: docker_nvidia_runtime.rc != 0
   changed_when: true
   notify: Restart docker
 

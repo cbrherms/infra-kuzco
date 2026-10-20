@@ -63,7 +63,7 @@ For the 12 GB Nvidia card, Ollama is limited to one loaded model and unloads it 
 Continue connects to Ollama at `http://kuzco:11434`; Home Assistant uses its Ollama integration and Wyoming
 integrations on ports `10300` and `10200`.
 
-Model data is under `/srv/ai/` on the host. New services need a `docker/<name>/docker-compose.yaml` and an
+Model data is under `/srv/ai/` on the host, which is a dedicated NVMe mounted by the `storage` role (ext4, label `ai-data`, mounted by label; the role only formats a blank disk). New services need a `docker/<name>/docker-compose.yaml` and an
 entry in `.doco-cd.yaml`.
 
 ## Secrets
