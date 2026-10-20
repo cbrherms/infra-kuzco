@@ -10,4 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: jdx/mise-action@v2
+      - name: Install Ansible collections
+        run: |
+          mkdir -p .ansible/collections
+          ansible-galaxy collection install -r ansible/requirements.yml -p .ansible/collections --force
+          echo "ANSIBLE_COLLECTIONS_PATH=$GITHUB_WORKSPACE/.ansible/collections" >> "$GITHUB_ENV"
       - run: just lint
