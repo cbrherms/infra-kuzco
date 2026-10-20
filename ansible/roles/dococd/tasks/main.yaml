@@ -20,6 +20,7 @@
     - piper
     - comfyui/models
     - comfyui/output
+    - arcane/data
 
 - name: Configure Doco-CD
   ansible.builtin.template:
