@@ -49,7 +49,7 @@ age-init:
 [script]
 encrypt:
     find "{{ justfile_directory() }}" -type f -name "*.enc.*" -not -path "*/.git/*" | while read -r file; do
-        if sops filestatus "$file" | jq --exit-status '.encrypted == false' &>/dev/null; then
+        if sops filestatus "$file" | jq --exit-status '.encrypted == false' >/dev/null 2>&1; then
             sops --encrypt --in-place "$file"
             echo "encrypted $file"
         fi
