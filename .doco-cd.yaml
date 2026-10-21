@@ -3,6 +3,11 @@ working_dir: docker/ollama
 compose_files:
   - docker-compose.yaml
 ---
+name: traefik
+working_dir: docker/traefik
+compose_files:
+  - docker-compose.yaml
+---
 name: open-webui
 working_dir: docker/open-webui
 compose_files:

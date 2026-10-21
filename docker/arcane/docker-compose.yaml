@@ -4,16 +4,31 @@ services:
     restart: unless-stopped
     container_name: arcane
     ports:
-      - '3552:3552'
+      - "3552:3552"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /srv/ai/arcane/data:/app/data
       - /opt/docker:/opt/docker
     environment:
-      - PUID=1000
-      - PGID=1000
-      - PROJECTS_DIRECTORY=/opt/docker
+      APP_URL: "https://arcane.${TRAEFIK_DOMAIN:?Set TRAEFIK_DOMAIN in mise config}"
+      PUID: "1000"
+      PGID: "1000"
+      PROJECTS_DIRECTORY: /opt/docker
     env_file:
       - path: secrets.enc.env
         required: false
     cgroup: host
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - "traefik.http.routers.arcane.rule=Host(`arcane.${TRAEFIK_DOMAIN:?Set TRAEFIK_DOMAIN in mise config}`)"
+      - traefik.http.routers.arcane.entrypoints=websecure
+      - traefik.http.routers.arcane.tls=true
+      - traefik.http.routers.arcane.tls.certresolver=letsencrypt
+      - traefik.http.services.arcane.loadbalancer.server.port=3552
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

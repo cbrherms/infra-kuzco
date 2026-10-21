@@ -13,12 +13,27 @@ services:
     ports:
       - "3000:8080"
     environment:
-      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OLLAMA_BASE_URL: http://ollama:11434
     # Encrypted with SOPS; optional so the stack still starts before it exists (random session key)
     env_file:
       - path: secrets.enc.env
         required: false
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     volumes:
       - /srv/ai/open-webui:/app/backend/data
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - "traefik.http.routers.open-webui.rule=Host(`open-webui.${TRAEFIK_DOMAIN:?Set TRAEFIK_DOMAIN in mise config}`)"
+      - traefik.http.routers.open-webui.entrypoints=websecure
+      - traefik.http.routers.open-webui.tls=true
+      - traefik.http.routers.open-webui.tls.certresolver=letsencrypt
+      - traefik.http.services.open-webui.loadbalancer.server.port=8080
+    networks:
+      - proxy
+      - llm
+
+networks:
+  proxy:
+    external: true
+  llm:
+    external: true

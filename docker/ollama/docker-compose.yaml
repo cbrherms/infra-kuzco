@@ -30,3 +30,9 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+    networks:
+      - llm
+
+networks:
+  llm:
+    external: true

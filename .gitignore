@@ -5,6 +5,7 @@
 keys.txt
 *.keys.txt
 secrets.env
+.decrypted~*
 .mise.local.toml
 mise.local.toml
 .private/

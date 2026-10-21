@@ -24,3 +24,17 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - "traefik.http.routers.comfyui.rule=Host(`comfyui.${TRAEFIK_DOMAIN:?Set TRAEFIK_DOMAIN in mise config}`)"
+      - traefik.http.routers.comfyui.entrypoints=websecure
+      - traefik.http.routers.comfyui.tls=true
+      - traefik.http.routers.comfyui.tls.certresolver=letsencrypt
+      - traefik.http.services.comfyui.loadbalancer.server.port=8188
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

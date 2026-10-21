@@ -53,8 +53,10 @@ just hooks                   # pre-commit lint + SOPS-encryption check
 | Service | Port | Notes |
 |---|---|---|
 | ollama | 11434 | LLM server and model manager (`docker exec ollama ollama pull qwen2.5-coder:14b`) |
-| open-webui | 3000 | Chat front end for Ollama |
-| comfyui | 8188 | Built from `docker/comfyui/Dockerfile` |
+| traefik | 80, 443 | HTTPS reverse proxy for Open WebUI, ComfyUI, and Arcane |
+| open-webui | 3000, 443 | Chat front end at `https://open-webui.${TRAEFIK_DOMAIN}` |
+| comfyui | 8188, 443 | Built from `docker/comfyui/Dockerfile`; `https://comfyui.${TRAEFIK_DOMAIN}` |
+| arcane | 3552, 443 | Docker manager at `https://arcane.${TRAEFIK_DOMAIN}` |
 | whisper | 10300 | Wyoming faster-whisper STT (GPU) for Home Assistant |
 | piper | 10200 | Wyoming TTS (CPU) for Home Assistant |
 | dozzle | 8080 | Live logs for Docker containers |

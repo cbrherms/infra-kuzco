@@ -26,3 +26,6 @@ ANSIBLE_INVENTORY = "{{config_root}}/ansible/inventory/hosts.yaml"
 # Compose deployment: run docker/compose against the endpoint over SSH
 DOCKER_HOST = "ssh://{{env.KUZCO_USER}}@{{env.KUZCO_HOST}}"
 COMPOSE_PROJECT_DIR = "{{config_root}}/docker"
+LOCAL_DOMAIN = ""
+TRAEFIK_DOMAIN = ""
+ACME_EMAIL = ""
