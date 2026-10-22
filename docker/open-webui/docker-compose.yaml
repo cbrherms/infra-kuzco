@@ -23,7 +23,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy
-      - "traefik.http.routers.open-webui.rule=Host(`open-webui.${TRAEFIK_DOMAIN:?Set TRAEFIK_DOMAIN in mise config}`)"
+      - "traefik.http.routers.open-webui.rule=Host(`chat.${TRAEFIK_DOMAIN:?Set TRAEFIK_DOMAIN in mise config}`)"
       - traefik.http.routers.open-webui.entrypoints=websecure
       - traefik.http.routers.open-webui.tls=true
       - traefik.http.routers.open-webui.tls.certresolver=letsencrypt
