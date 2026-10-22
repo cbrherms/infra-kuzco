@@ -1,0 +1,15 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Europe/London",
+  "schedule": ["before 6am on monday"],
+  "enabledManagers": ["docker-compose", "dockerfile", "mise", "pre-commit", "github-actions"],
+  "packageRules": [
+    {
+      "description": "Group non-major tooling bumps into one PR",
+      "matchManagers": ["mise", "pre-commit", "github-actions"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "tooling"
+    }
+  ]
+}
