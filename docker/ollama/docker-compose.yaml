@@ -16,7 +16,7 @@ services:
       # 12 GB VRAM: one model at a time, unload after 10 minutes idle to free the GPU for ComfyUI/Whisper
       TZ: Europe/London
       OLLAMA_MAX_LOADED_MODELS: "1"
-      OLLAMA_KEEP_ALIVE: 10m
+      OLLAMA_KEEP_ALIVE: 60m
       OLLAMA_CONTEXT_LENGTH: "8192"
       OLLAMA_NUM_PARALLEL: "1"
       OLLAMA_FLASH_ATTENTION: "1"
