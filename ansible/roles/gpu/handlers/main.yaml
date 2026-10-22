@@ -2,3 +2,10 @@
 - name: Update initramfs
   ansible.builtin.command: update-initramfs -u
   changed_when: true
+
+- name: Restart nvidia-persistenced
+  ansible.builtin.systemd:
+    name: nvidia-persistenced
+    state: restarted
+    daemon_reload: true
+  failed_when: false

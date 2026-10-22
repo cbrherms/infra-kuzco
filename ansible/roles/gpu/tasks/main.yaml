@@ -17,11 +17,28 @@
       options nouveau modeset=0
   notify: Update initramfs
 
-- name: Enable NVIDIA persistence daemon
+- name: Create nvidia-persistenced override directory
+  ansible.builtin.file:
+    path: /etc/systemd/system/nvidia-persistenced.service.d
+    state: directory
+    mode: "0755"
+
+# The packaged unit starts the daemon with --no-persistence-mode, so the GPU still powers down its driver state when idle. Chasing very slow cold starts
+- name: Enable GPU persistence mode in nvidia-persistenced
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/nvidia-persistenced.service.d/persistence-mode.conf
+    mode: "0644"
+    content: |
+      [Service]
+      ExecStart=
+      ExecStart=/usr/bin/nvidia-persistenced --user nvidia-persistenced --persistence-mode --verbose
+  notify: Restart nvidia-persistenced
+
+- name: Start NVIDIA persistence daemon
   ansible.builtin.systemd:
     name: nvidia-persistenced
-    enabled: true
     state: started
+    daemon_reload: true
   failed_when: false
 
 - name: Check whether a reboot is pending
