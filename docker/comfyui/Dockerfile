@@ -1,4 +1,4 @@
-FROM python:3.13-slim-trixie
+FROM python:3.15-slim-trixie
 
 ARG COMFYUI_REF=v0.40.0
 ARG TORCH_VERSION=2.14.1
