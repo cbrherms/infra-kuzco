@@ -16,7 +16,7 @@ services:
       - docker-api
 
   traefik:
-    image: traefik:v3.7.15
+    image: traefik:v3.7.16
     container_name: traefik
     restart: unless-stopped
     security_opt:
