@@ -1,12 +1,6 @@
 # model_name matches the Ollama tag so the model behind each name is always obvious.
 # num_ctx is forwarded to Ollama per model. Check `docker exec ollama ollama ps` for 100% GPU.
 model_list:
-  - model_name: deepseek-coder-v2:16b
-    litellm_params:
-      model: ollama_chat/MFDoom/deepseek-coder-v2-tool-calling:16b
-      api_base: http://ollama:11434
-      num_ctx: 8192
-
   - model_name: qwen2.5-coder:14b
     litellm_params:
       model: ollama_chat/qwen2.5-coder:14b
