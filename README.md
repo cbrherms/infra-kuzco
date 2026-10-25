@@ -57,12 +57,15 @@ just hooks                   # pre-commit lint + SOPS-encryption check
 | open-webui | 3000, 443 | Chat front end at `https://open-webui.${TRAEFIK_DOMAIN}` |
 | comfyui | 8188, 443 | Built from `docker/comfyui/Dockerfile`; `https://comfyui.${TRAEFIK_DOMAIN}` |
 | arcane | 3552, 443 | Docker manager at `https://arcane.${TRAEFIK_DOMAIN}` |
+| litellm | 443 | OpenAI-compatible API and usage dashboard at `https://litellm.${TRAEFIK_DOMAIN}`; backed by PostgreSQL |
 | whisper | 10300 | Wyoming faster-whisper STT (GPU) for Home Assistant |
 | piper | 10200 | Wyoming TTS (CPU) for Home Assistant |
 
 For the 12 GB Nvidia card, Ollama is limited to one loaded model and unloads it after 10 minutes idle.
-Continue connects to Ollama at `http://kuzco:11434`; Home Assistant uses its Ollama integration and Wyoming
-integrations on ports `10300` and `10200`.
+LiteLLM is the OpenAI-compatible gateway in front of Ollama (model alias `local-coder`; keys and spend logs in
+PostgreSQL) and is reachable only through Traefik. Continue and other OpenAI-compatible clients should use
+`https://litellm.${TRAEFIK_DOMAIN}/v1` with a LiteLLM virtual key. Home Assistant still uses its Ollama
+integration at `http://kuzco:11434`, plus the Wyoming integrations on ports `10300` and `10200` - for now.
 
 Model data is under `/srv/ai/` on the host, which is a dedicated NVMe mounted by the `storage` role (ext4, label `ai-data`, mounted by label; the role only formats a blank disk). New services need a `docker/<name>/docker-compose.yaml` and an
 entry in `.doco-cd.yaml`.

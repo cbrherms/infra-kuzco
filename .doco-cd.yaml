@@ -32,3 +32,8 @@ name: arcane
 working_dir: docker/arcane
 compose_files:
   - docker-compose.yaml
+---
+name: litellm
+working_dir: docker/litellm
+compose_files:
+  - docker-compose.yaml

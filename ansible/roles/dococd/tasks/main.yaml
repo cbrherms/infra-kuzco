@@ -21,6 +21,7 @@
     - comfyui/models
     - comfyui/output
     - arcane/data
+    - litellm/postgres
 
 - name: Create Traefik ACME storage directory
   ansible.builtin.file:
