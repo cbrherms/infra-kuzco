@@ -1,44 +1,37 @@
-# Aliases are purpose tags; see .private/ai_stack_blueprint.md for what sits behind each.
+# model_name matches the Ollama tag so the model behind each name is always obvious.
 # num_ctx is forwarded to Ollama per model. Check `docker exec ollama ollama ps` for 100% GPU.
 model_list:
-  - model_name: coding-fast
+  - model_name: deepseek-coder-v2:16b
     litellm_params:
       model: ollama_chat/MFDoom/deepseek-coder-v2-tool-calling:16b
       api_base: http://ollama:11434
       num_ctx: 8192
 
-  - model_name: coding-balanced
+  - model_name: qwen2.5-coder:14b
     litellm_params:
       model: ollama_chat/qwen2.5-coder:14b
       api_base: http://ollama:11434
       num_ctx: 8192
 
-  # Compatibility alias
-  - model_name: local-coder
-    litellm_params:
-      model: ollama_chat/qwen2.5-coder:14b
-      api_base: http://ollama:11434
-      num_ctx: 8192
-
-  - model_name: reasoning-deep
+  - model_name: deepseek-r1:14b
     litellm_params:
       model: ollama_chat/deepseek-r1:14b
       api_base: http://ollama:11434
       num_ctx: 8192
 
-  - model_name: general-balanced
+  - model_name: phi4:14b
     litellm_params:
       model: ollama_chat/phi4:14b
       api_base: http://ollama:11434
       num_ctx: 8192
 
-  - model_name: chat-balanced
+  - model_name: qwen3.5:9b
     litellm_params:
       model: ollama_chat/qwen3.5:9b
       api_base: http://ollama:11434
       num_ctx: 8192
 
-  - model_name: chat-fast
+  - model_name: llama3.1:8b
     litellm_params:
       model: ollama_chat/llama3.1:8b
       api_base: http://ollama:11434
@@ -56,7 +49,7 @@ litellm_settings:
 router_settings:
   num_retries: 1
   timeout: 300
-  # fallbacks: [{"coding-balanced": ["cloud-fallback"]}]
+  # fallbacks: [{"qwen2.5-coder:14b": ["cloud-fallback"]}]
 
 general_settings:
   master_key: os.environ/LITELLM_MASTER_KEY
