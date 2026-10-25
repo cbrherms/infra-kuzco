@@ -17,8 +17,9 @@ services:
       - "4000"
     environment:
       # Allow adding models in the UI; credentials are encrypted with LITELLM_SALT_KEY (in the secrets file, never change it)
-      STORE_MODEL_IN_DB: "True"
+      STORE_MODEL_IN_DB: "true"
       LITELLM_MODE: PRODUCTION
+      LITELLM_HIDE_DEFAULT_CREDENTIALS_HINT: "true"
       LITELLM_LOG: INFO
       LITELLM_TELEMETRY_DISABLED: "true"
       LITELLM_DONT_SHOW_FEEDBACK_BOX: "true"

@@ -61,5 +61,6 @@ router_settings:
 general_settings:
   master_key: os.environ/LITELLM_MASTER_KEY
   database_url: os.environ/DATABASE_URL
+  disable_env_credential_login: true
   disable_spend_logs: false
   maximum_spend_logs_retention_period: 90d
