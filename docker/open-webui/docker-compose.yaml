@@ -15,8 +15,6 @@ services:
     environment:
       OLLAMA_BASE_URL: http://ollama:11434
       OPENAI_API_BASE_URL: http://litellm:4000/v1
-    # Encrypted with SOPS; optional so the stack still starts before it exists (random session key).
-    # Add OPENAI_API_KEY=<LiteLLM virtual key> here to authenticate against LiteLLM.
     env_file:
       - path: secrets.enc.env
         required: false
