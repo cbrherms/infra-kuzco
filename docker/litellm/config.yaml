@@ -1,12 +1,51 @@
+# Aliases are purpose tags; see .private/ai_stack_blueprint.md for what sits behind each.
+# num_ctx is forwarded to Ollama per model. Check `docker exec ollama ollama ps` for 100% GPU.
 model_list:
+  - model_name: coding-fast
+    litellm_params:
+      model: ollama_chat/MFDoom/deepseek-coder-v2-tool-calling:16b
+      api_base: http://ollama:11434
+      num_ctx: 8192
+
+  - model_name: coding-balanced
+    litellm_params:
+      model: ollama_chat/qwen2.5-coder:14b
+      api_base: http://ollama:11434
+      num_ctx: 8192
+
+  # Compatibility alias
   - model_name: local-coder
     litellm_params:
       model: ollama_chat/qwen2.5-coder:14b
       api_base: http://ollama:11434
-      num_ctx: 8192 # per-model context; forwarded to Ollama as an option
+      num_ctx: 8192
 
-  # External fallback: uncomment, add the provider key to litellm.secrets.enc.env, then enable `fallbacks` below.
-  # - model_name: external-fallback
+  - model_name: reasoning-deep
+    litellm_params:
+      model: ollama_chat/deepseek-r1:14b
+      api_base: http://ollama:11434
+      num_ctx: 8192
+
+  - model_name: general-balanced
+    litellm_params:
+      model: ollama_chat/phi4:14b
+      api_base: http://ollama:11434
+      num_ctx: 8192
+
+  - model_name: chat-balanced
+    litellm_params:
+      model: ollama_chat/qwen3.5:9b
+      api_base: http://ollama:11434
+      num_ctx: 8192
+
+  - model_name: chat-fast
+    litellm_params:
+      model: ollama_chat/llama3.1:8b
+      api_base: http://ollama:11434
+      num_ctx: 8192
+
+  # External fallback:
+  # - model_name: cloud-fallback
   #   litellm_params:
   #     model: openai/gpt-4.1-mini
   #     api_key: os.environ/OPENAI_API_KEY
@@ -17,9 +56,10 @@ litellm_settings:
 router_settings:
   num_retries: 1
   timeout: 300
-  # fallbacks: [{"local-coder": ["external-fallback"]}]
+  # fallbacks: [{"coding-balanced": ["cloud-fallback"]}]
 
 general_settings:
   master_key: os.environ/LITELLM_MASTER_KEY
   database_url: os.environ/DATABASE_URL
   disable_spend_logs: false
+  maximum_spend_logs_retention_period: 90d
