@@ -25,6 +25,12 @@ model_list:
       api_base: http://ollama:11434
       num_ctx: 32768
 
+  - model_name: qwen3.5:9b-128k
+    litellm_params:
+      model: ollama_chat/qwen3.5:9b
+      api_base: http://ollama:11434
+      num_ctx: 131072
+
   - model_name: llama3.1:8b
     litellm_params:
       model: ollama_chat/llama3.1:8b
