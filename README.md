@@ -61,7 +61,7 @@ just hooks                   # pre-commit lint + SOPS-encryption check
 | whisper | 10300 | Wyoming faster-whisper STT (GPU) for Home Assistant |
 | piper | 10200 | Wyoming TTS (CPU) for Home Assistant |
 
-For the 12 GB Nvidia card, Ollama is limited to one loaded model and unloads it after 10 minutes idle.
+For the 12 GB Nvidia card, Ollama keeps at most two models loaded (the chat model plus the small `qwen3.5:0.8b-tasks` model for Open-WebUI background tasks) and unloads them after 60 minutes idle.
 LiteLLM is the OpenAI-compatible gateway in front of Ollama (model alias `local-coder`; keys and spend logs in
 PostgreSQL) and is reachable only through Traefik. Continue and other OpenAI-compatible clients should use
 `https://litellm.lan.${SECRET_DOMAIN}/v1` with a LiteLLM virtual key. Home Assistant still uses its Ollama

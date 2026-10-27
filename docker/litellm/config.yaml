@@ -37,6 +37,13 @@ model_list:
       api_base: http://ollama:11434
       num_ctx: 131072
 
+  - model_name: qwen3.5:0.8b-tasks
+    litellm_params:
+      model: ollama_chat/qwen3.5:0.8b
+      api_base: http://ollama:11434
+      num_ctx: 4096
+      think: false
+
   # External fallback:
   # - model_name: cloud-fallback
   #   litellm_params:

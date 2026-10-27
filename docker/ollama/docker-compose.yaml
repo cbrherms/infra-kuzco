@@ -13,9 +13,8 @@ services:
     ports:
       - "11434:11434"
     environment:
-      # 12 GB VRAM: one model at a time, unload after 10 minutes idle to free the GPU for ComfyUI/Whisper
       TZ: Europe/London
-      OLLAMA_MAX_LOADED_MODELS: "1"
+      OLLAMA_MAX_LOADED_MODELS: "2"
       OLLAMA_KEEP_ALIVE: 60m
       OLLAMA_CONTEXT_LENGTH: "4096"
       OLLAMA_NUM_PARALLEL: "1"
