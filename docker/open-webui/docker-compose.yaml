@@ -15,6 +15,12 @@ services:
     environment:
       OLLAMA_BASE_URL: http://ollama:11434
       OPENAI_API_BASE_URL: http://litellm:4000/v1
+      # PersistentConfig: only seeds the first start; later changes are made in Admin > Settings > Web Search
+      ENABLE_WEB_SEARCH: "true"
+      WEB_SEARCH_ENGINE: searxng
+      SEARXNG_QUERY_URL: "https://search.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}/search"
+      WEB_SEARCH_RESULT_COUNT: "3"
+      WEB_SEARCH_CONCURRENT_REQUESTS: "3"
     env_file:
       - path: secrets.enc.env
         required: false
