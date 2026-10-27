@@ -10,7 +10,7 @@ services:
       - /srv/ai/arcane/data:/app/data
       - /opt/docker:/opt/docker
     environment:
-      APP_URL: "https://arcane.${TRAEFIK_DOMAIN:?Set TRAEFIK_DOMAIN in mise config}"
+      APP_URL: "https://arcane.lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}"
       PUID: "1000"
       PGID: "1000"
       PROJECTS_DIRECTORY: /opt/docker
@@ -21,7 +21,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy
-      - "traefik.http.routers.arcane.rule=Host(`arcane.${TRAEFIK_DOMAIN:?Set TRAEFIK_DOMAIN in mise config}`)"
+      - "traefik.http.routers.arcane.rule=Host(`arcane.lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}`)"
       - traefik.http.routers.arcane.entrypoints=websecure
       - traefik.http.routers.arcane.tls=true
       - traefik.http.routers.arcane.tls.certresolver=letsencrypt

@@ -40,7 +40,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy
-      - "traefik.http.routers.litellm.rule=Host(`litellm.${TRAEFIK_DOMAIN:?Set TRAEFIK_DOMAIN in mise config}`)"
+      - "traefik.http.routers.litellm.rule=Host(`litellm.lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}`)"
       - traefik.http.routers.litellm.entrypoints=websecure
       - traefik.http.routers.litellm.tls=true
       - traefik.http.routers.litellm.tls.certresolver=letsencrypt

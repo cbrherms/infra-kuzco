@@ -44,8 +44,8 @@ services:
       - --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare
       - --certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=1.1.1.1:53,1.0.0.1:53
       - --entrypoints.websecure.http.tls.certresolver=letsencrypt
-      - --entrypoints.websecure.http.tls.domains[0].main=${TRAEFIK_DOMAIN:?Set TRAEFIK_DOMAIN in mise config}
-      - --entrypoints.websecure.http.tls.domains[0].sans=*.${TRAEFIK_DOMAIN:?Set TRAEFIK_DOMAIN in mise config}
+      - --entrypoints.websecure.http.tls.domains[0].main=lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}
+      - --entrypoints.websecure.http.tls.domains[0].sans=*.lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}
       - --log.level=INFO
       - --accesslog=true
     volumes:
