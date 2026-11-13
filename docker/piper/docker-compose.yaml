@@ -1,7 +1,7 @@
 # Wyoming-protocol text-to-speech for Home Assistant Assist (CPU is fast enough)
 services:
   piper:
-    image: rhasspy/wyoming-piper:2.5.2
+    image: rhasspy/wyoming-piper:2.5.3
     container_name: piper
     restart: unless-stopped
     security_opt:
