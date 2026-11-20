@@ -8,7 +8,7 @@
 "aqua:pre-commit/pre-commit" = "4.7.0"
 "pipx:yamllint" = "1.38.0"
 "pipx:ansible-lint" = "26.10.1"
-"pipx:ansible" = "14.5.0"
+"pipx:ansible" = "15.0.0"
 "aqua:docker/cli" = "29.9.2"
 "aqua:docker/compose" = "5.6.1"
 
