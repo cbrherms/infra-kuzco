@@ -57,9 +57,9 @@ From the workstation, in this repo:
 
 | Service | Access | Notes |
 |---|---|---|
-| Ollama | HTTP port 11434; `https://ollama.lan.${SECRET_DOMAIN}` | Model management and inference |
+| Ollama | HTTP port 11434; `https://ollama-kuzco.lan.${SECRET_DOMAIN}` | Model management and inference |
 | Traefik | Ports 80 and 443 | HTTPS proxy with a Cloudflare DNS challenge |
-| Arcane | HTTP port 3552; `https://arcane.lan.${SECRET_DOMAIN}` | Docker GUI; persistent Compose configuration stays in Git |
+| Arcane | HTTP port 3552; `https://arcane-kuzco.lan.${SECRET_DOMAIN}` | Docker GUI; persistent Compose configuration stays in Git |
 
 Ollama exposes both its native API (`/api`) and an OpenAI-compatible subset
 (`/v1`). Both routes are unauthenticated and unrestricted by this configuration;

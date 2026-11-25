@@ -10,7 +10,7 @@ services:
       - arcane-data:/app/data
       - /opt/docker:/opt/docker
     environment:
-      ARCANE_APP_URL: "https://arcane.lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}"
+      ARCANE_APP_URL: "https://arcane-kuzco.lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}"
       PUID: "1000"
       PGID: "1000"
       ARCANE_PROJECTS_DIRECTORY: /opt/docker
@@ -21,7 +21,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy
-      - "traefik.http.routers.arcane.rule=Host(`arcane.lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}`)"
+      - "traefik.http.routers.arcane.rule=Host(`arcane-kuzco.lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}`)"
       - traefik.http.routers.arcane.entrypoints=websecure
       - traefik.http.routers.arcane.tls=true
       - traefik.http.routers.arcane.tls.certresolver=letsencrypt
