@@ -8,29 +8,6 @@
     - /etc/doco-cd
     - /var/lib/doco-cd
 
-- name: Create persistent model/cache directories for AI services
-  ansible.builtin.file:
-    path: "/srv/ai/{{ item }}"
-    state: directory
-    mode: "0755"
-  loop:
-    - ollama
-    - arcane/data
-
-- name: Create Traefik ACME storage directory
-  ansible.builtin.file:
-    path: /srv/ai/traefik/acme
-    state: directory
-    mode: "0700"
-
-- name: Create Traefik ACME storage file
-  ansible.builtin.file:
-    path: /srv/ai/traefik/acme/acme.json
-    state: touch
-    mode: "0600"
-    modification_time: preserve
-    access_time: preserve
-
 - name: Configure Doco-CD
   ansible.builtin.template:
     src: doco-cd.env.j2

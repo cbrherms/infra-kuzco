@@ -49,10 +49,14 @@ services:
       - --log.level=INFO
       - --accesslog=true
     volumes:
-      - /srv/ai/traefik/acme:/letsencrypt
+      - traefik-acme:/letsencrypt
     networks:
       - proxy
       - docker-api
+
+volumes:
+  traefik-acme:
+    name: kuzco-traefik-acme
 
 networks:
   proxy:
