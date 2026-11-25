@@ -15,13 +15,7 @@
     mode: "0755"
   loop:
     - ollama
-    - open-webui
-    - whisper
-    - piper
-    - comfyui/models
-    - comfyui/output
     - arcane/data
-    - litellm/postgres
 
 - name: Create Traefik ACME storage directory
   ansible.builtin.file:
