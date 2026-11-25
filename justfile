@@ -64,7 +64,7 @@ lint:
 hooks:
     pre-commit install
 
-# Create or edit an encrypted file, e.g. just secret-edit docker/open-webui/secrets.enc.env
+# Create or edit an encrypted file, e.g. just secret-edit docker/traefik/secrets.enc.env
 secret-edit file:
     sops edit {{file}}
 

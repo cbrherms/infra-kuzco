@@ -7,13 +7,13 @@ services:
       - "3552:3552"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /srv/ai/arcane/data:/app/data
+      - arcane-data:/app/data
       - /opt/docker:/opt/docker
     environment:
-      APP_URL: "https://arcane.lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}"
+      ARCANE_APP_URL: "https://arcane.lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}"
       PUID: "1000"
       PGID: "1000"
-      PROJECTS_DIRECTORY: /opt/docker
+      ARCANE_PROJECTS_DIRECTORY: /opt/docker
     env_file:
       - path: secrets.enc.env
         required: false
@@ -28,6 +28,10 @@ services:
       - traefik.http.services.arcane.loadbalancer.server.port=3552
     networks:
       - proxy
+
+volumes:
+  arcane-data:
+    name: kuzco-arcane-data
 
 networks:
   proxy:
