@@ -1,6 +1,6 @@
 services:
   ollama:
-    image: ollama/ollama:0.40.17
+    image: ollama/ollama:0.40.18
     container_name: ollama
     restart: unless-stopped
     security_opt:
@@ -27,7 +27,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=proxy
-      - "traefik.http.routers.ollama.rule=Host(`ollama.lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}`)"
+      - "traefik.http.routers.ollama.rule=Host(`ollama-kuzco.lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}`)"
       - traefik.http.routers.ollama.entrypoints=websecure
       - traefik.http.routers.ollama.tls=true
       - traefik.http.routers.ollama.tls.certresolver=letsencrypt

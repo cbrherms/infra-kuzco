@@ -6,9 +6,10 @@
 "aqua:getsops/sops" = "3.13.3"
 "aqua:koalaman/shellcheck" = "0.11.0"
 "aqua:pre-commit/pre-commit" = "4.7.0"
+python = "3.13"
 "pipx:yamllint" = "1.38.0"
 "pipx:ansible-lint" = "26.11.0"
-"pipx:ansible" = "15.0.0"
+"pipx:ansible" = { version = "15.0.0", depends = ["python"], uvx = false, pipx_args = "--python python3.13 --include-deps" }
 "aqua:docker/cli" = "29.10.0"
 "aqua:docker/compose" = "5.8.0"
 

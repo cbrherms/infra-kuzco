@@ -21,8 +21,8 @@ Ansible installs the configured public key and disables SSH password login.
 
 From the workstation, in this repo:
 
-1. Run `mise install` and optionally `just hooks`. The pinned Ansible 15
-   package requires Python 3.13 or newer for pipx.
+1. Run `mise install` and optionally `just hooks`. Mise installs Python 3.13
+   for Ansible 15 on the workstation.
 2. Set connection and admin values in `.mise.local.toml`, including
    `KUZCO_HOST`, `KUZCO_USER`, `ANSIBLE_ADMIN_USER` and
    `ANSIBLE_ADMIN_SSH_KEY`. Set the domain and ACME email variables. If using
