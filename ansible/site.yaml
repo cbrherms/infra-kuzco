@@ -4,6 +4,8 @@
   become: true
   roles:
     - common
+    - role: storage
+      tags: [storage]
     - gpu
     - docker
     - dococd

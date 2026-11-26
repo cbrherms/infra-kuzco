@@ -1,0 +1,193 @@
+---
+- name: Resolve root filesystem device
+  ansible.builtin.command:
+    argv:
+      - findmnt
+      - --noheadings
+      - --output
+      - SOURCE,FSTYPE
+      - --target
+      - /
+  register: storage_root_mount
+  changed_when: false
+  check_mode: false
+
+- name: Resolve configured root logical volume
+  ansible.builtin.command:
+    argv:
+      - readlink
+      - --canonicalize-existing
+      - "/dev/{{ root_volume_group }}/{{ root_logical_volume }}"
+  register: storage_root_lv_device
+  changed_when: false
+  check_mode: false
+
+- name: Resolve mounted root device
+  ansible.builtin.command:
+    argv:
+      - readlink
+      - --canonicalize-existing
+      - "{{ storage_root_mount.stdout.split()[0] }}"
+  register: storage_root_mount_device
+  changed_when: false
+  check_mode: false
+
+- name: Verify the expected root storage layout
+  ansible.builtin.assert:
+    that:
+      - storage_root_mount.stdout.split() | length == 2
+      - storage_root_mount.stdout.split()[1] == 'ext4'
+      - storage_root_mount_device.stdout == storage_root_lv_device.stdout
+      - models_logical_volume != root_logical_volume
+      - models_mount_path == '/srv/models'
+    fail_msg: >-
+      Root must be the configured ext4 logical volume, distinct from the
+      model volume, with the expected model mount path.
+
+- name: Inspect model logical volume
+  ansible.builtin.stat:
+    path: "/dev/{{ root_volume_group }}/{{ models_logical_volume }}"
+  register: storage_models_lv
+
+- name: Inspect model mount directory
+  ansible.builtin.stat:
+    path: "{{ models_mount_path }}"
+  register: storage_models_dir
+
+- name: Check whether the model mount directory is mounted
+  ansible.builtin.command:
+    argv:
+      - findmnt
+      - --noheadings
+      - --output
+      - SOURCE
+      - --mountpoint
+      - "{{ models_mount_path }}"
+  register: storage_models_mount
+  changed_when: false
+  failed_when: storage_models_mount.rc not in [0, 1]
+  check_mode: false
+
+- name: Resolve mounted model device
+  ansible.builtin.command:
+    argv:
+      - readlink
+      - --canonicalize-existing
+      - "{{ storage_models_mount.stdout | trim }}"
+  register: storage_models_mount_device
+  changed_when: false
+  check_mode: false
+  when: storage_models_mount.rc == 0
+
+- name: Resolve existing model logical volume
+  ansible.builtin.command:
+    argv:
+      - readlink
+      - --canonicalize-existing
+      - "/dev/{{ root_volume_group }}/{{ models_logical_volume }}"
+  register: storage_models_lv_device
+  changed_when: false
+  check_mode: false
+  when: storage_models_lv.stat.exists
+
+- name: Verify the mounted model device
+  ansible.builtin.assert:
+    that:
+      - storage_models_lv.stat.exists
+      - storage_models_mount_device.stdout == storage_models_lv_device.stdout
+    fail_msg: The model mount path is already occupied by a different device.
+  when: storage_models_mount.rc == 0
+
+- name: Check the model mount directory is empty before mounting
+  ansible.builtin.command:
+    argv:
+      - find
+      - "{{ models_mount_path }}"
+      - -mindepth
+      - "1"
+      - -maxdepth
+      - "1"
+      - -print
+      - -quit
+  register: storage_models_dir_contents
+  changed_when: false
+  check_mode: false
+  when:
+    - storage_models_mount.rc != 0
+    - storage_models_dir.stat.exists
+    - storage_models_dir.stat.isdir
+
+- name: Verify an unmounted model directory is safe to use
+  ansible.builtin.assert:
+    that:
+      - not storage_models_dir.stat.exists or storage_models_dir.stat.isdir
+      - not storage_models_dir.stat.exists or storage_models_dir_contents.stdout | default('') == ''
+    fail_msg: The unmounted model path must be an empty directory.
+  when: storage_models_mount.rc != 0
+
+- name: Inspect the existing model filesystem
+  ansible.builtin.command:
+    argv:
+      - blkid
+      - -p
+      - -s
+      - TYPE
+      - -o
+      - value
+      - "/dev/{{ root_volume_group }}/{{ models_logical_volume }}"
+  register: storage_models_fstype
+  changed_when: false
+  failed_when: storage_models_fstype.rc not in [0, 2]
+  check_mode: false
+  when: storage_models_lv.stat.exists
+
+- name: Refuse to format an existing model logical volume
+  ansible.builtin.assert:
+    that:
+      - storage_models_fstype.stdout | trim == 'ext4'
+    fail_msg: The existing model logical volume must already contain an ext4 filesystem.
+  when: storage_models_lv.stat.exists
+
+- name: Grow root logical volume
+  community.general.lvol:
+    vg: "{{ root_volume_group }}"
+    lv: "{{ root_logical_volume }}"
+    size: "{{ root_volume_size }}"
+    shrink: false
+
+- name: Ensure root filesystem fills its logical volume
+  community.general.filesystem:
+    dev: "/dev/{{ root_volume_group }}/{{ root_logical_volume }}"
+    fstype: ext4
+    resizefs: true
+
+- name: Create or grow model logical volume
+  community.general.lvol:
+    vg: "{{ root_volume_group }}"
+    lv: "{{ models_logical_volume }}"
+    size: "{{ models_volume_size }}"
+    shrink: false
+
+- name: Create or grow model filesystem
+  community.general.filesystem:
+    dev: "/dev/{{ root_volume_group }}/{{ models_logical_volume }}"
+    fstype: ext4
+    resizefs: true
+  when: not ansible_check_mode or storage_models_lv.stat.exists
+
+- name: Mount model filesystem
+  ansible.posix.mount:
+    path: "{{ models_mount_path }}"
+    src: "/dev/{{ root_volume_group }}/{{ models_logical_volume }}"
+    fstype: ext4
+    opts: defaults
+    state: mounted
+
+- name: Create llama-swap model directory
+  ansible.builtin.file:
+    path: "{{ models_mount_path }}/llama-swap"
+    state: directory
+    owner: "{{ admin_user }}"
+    group: "{{ admin_user }}"
+    mode: "0755"
+  when: not ansible_check_mode or storage_models_mount.rc == 0

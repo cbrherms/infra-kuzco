@@ -2,6 +2,13 @@
 admin_user: "{{ lookup('ansible.builtin.env', 'ANSIBLE_ADMIN_USER') | default('ubuntu', true) }}"
 admin_ssh_key: "{{ lookup('ansible.builtin.env', 'ANSIBLE_ADMIN_SSH_KEY') | default('', true) }}"
 
+root_volume_group: ubuntu-vg
+root_logical_volume: ubuntu-lv
+root_volume_size: 100g
+models_logical_volume: models
+models_volume_size: 500g
+models_mount_path: /srv/models
+
 nvidia_driver_package: nvidia-driver-580-open
 gpu_unlock_enabled: true
 
