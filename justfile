@@ -42,6 +42,10 @@ gpu-info:
 llmfit:
     ssh -t {{user}}@{{host}} 'docker run --rm -it --gpus all ghcr.io/alexsjones/llmfit:1.1.21 --tui --no-dashboard'
 
+# Download the pinned Unsloth GGUF into llama-swap's model directory
+llama-model-download:
+    {{ssh}} 'bash -s' < scripts/download-qwen-gguf.sh
+
 # Create the age key (once) and write .sops.yaml; back the key up in 1Password
 age-init:
     mkdir -p "$(dirname "$SOPS_AGE_KEY_FILE")"

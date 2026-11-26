@@ -1,5 +1,5 @@
-name: ollama
-working_dir: docker/ollama
+name: llama-swap
+working_dir: docker/llama-swap
 compose_files:
   - docker-compose.yaml
 ---

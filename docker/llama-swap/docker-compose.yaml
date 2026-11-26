@@ -1,0 +1,58 @@
+services:
+  llama-swap:
+    image: ghcr.io/mostlygeek/llama-swap:unified-cuda-276@sha256:5744069cc54797594034ddfa1b206d2b4338e027f4c13d106b67c3759702bf57
+    container_name: llama-swap
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    env_file:
+      - secrets.enc.env
+    environment:
+      TZ: Europe/London
+      LLAMA_SWAP_WATCH_CONFIG: "false"
+    entrypoint: ["/bin/bash", "-euc"]
+    command:
+      - |
+        case "$${LLAMA_SWAP_API_KEY:-}" in
+          ""|ENC\[*) echo "llama-swap API key is missing or still encrypted" >&2; exit 1 ;;
+        esac
+        exec /usr/local/bin/run.sh
+    volumes:
+      - type: bind
+        source: ./config.yaml
+        target: /etc/llama-swap/config/config.yaml
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: /srv/models/llama-swap
+        target: /models
+        read_only: true
+        bind:
+          create_host_path: false
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - "traefik.http.routers.llama-swap.rule=Host(`llama-swap-kuzco.lan.${SECRET_DOMAIN:?Set SECRET_DOMAIN in mise config}`)"
+      - traefik.http.routers.llama-swap.entrypoints=websecure
+      - traefik.http.routers.llama-swap.tls=true
+      - traefik.http.routers.llama-swap.tls.certresolver=letsencrypt
+      - traefik.http.services.llama-swap.loadbalancer.server.port=8080
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
