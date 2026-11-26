@@ -73,6 +73,17 @@ manually.
 Arcane has direct Docker socket access, effectively host-administrator access.
 Its direct HTTP port is not protected by Traefik's TLS.
 
+## GPU unlock
+
+Provisioning builds and installs the pinned gpu-unlock DKMS and firmware
+packages and enables it for supported GPUs at boot. It requires Ubuntu 26.04,
+Dracut and disabled Secure Boot. Reboot manually after boot configuration
+changes, then check `journalctl -k -b | grep gpu_unlock` and confirm each GPU
+was unlocked. Keep console recovery available for boot changes.
+
+Set `gpu_unlock_enabled: false` in Ansible variables and run `just provision`
+to remove the managed boot option; reboot to disable the unlock.
+
 ## Storage and secrets
 
 Docker named volumes on the OS disk store persistent data:

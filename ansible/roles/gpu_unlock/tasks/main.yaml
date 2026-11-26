@@ -1,0 +1,20 @@
+---
+- name: Install GPU unlock when enabled
+  ansible.builtin.import_tasks: install.yaml
+  when: gpu_unlock_enabled | bool
+
+- name: Disable the GPU unlock boot option
+  ansible.builtin.file:
+    path: /etc/default/grub.d/99-kuzco-gpu-unlock.cfg
+    state: absent
+  register: gpu_unlock_disabled
+  when: not gpu_unlock_enabled | bool
+  notify: Update GRUB for GPU unlock
+
+- name: Report GPU unlock boot changes
+  ansible.builtin.debug:
+    msg: GPU unlock installation or boot configuration changed. Reboot the host when it is safe.
+  when: >-
+    (gpu_unlock_boot_config is defined and gpu_unlock_boot_config.changed | default(false))
+    or (gpu_unlock_disabled.changed | default(false))
+    or (gpu_unlock_installed.changed | default(false))

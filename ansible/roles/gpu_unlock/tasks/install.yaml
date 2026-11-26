@@ -1,0 +1,114 @@
+---
+- name: Require Ubuntu with Dracut
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.distribution == 'Ubuntu'
+      - ansible_facts.distribution_version == '26.04'
+    fail_msg: GPU unlock is configured for Ubuntu 26.04 with Dracut.
+
+- name: Install GPU unlock build dependencies
+  ansible.builtin.apt:
+    name:
+      - build-essential
+      - debhelper
+      - dh-dkms
+      - dkms
+      - dpkg-dev
+      - dracut
+      - fakeroot
+      - git
+      - mokutil
+      - zstd
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Check Secure Boot state
+  ansible.builtin.command: mokutil --sb-state
+  register: gpu_unlock_secure_boot
+  changed_when: false
+
+- name: Require Secure Boot to be disabled
+  ansible.builtin.assert:
+    that:
+      - "'SecureBoot disabled' in gpu_unlock_secure_boot.stdout"
+    fail_msg: GPU unlock requires Secure Boot to be disabled for this installation.
+
+- name: Check out pinned GPU unlock source
+  ansible.builtin.git:
+    repo: https://github.com/Zagitta/gpu-unlock.git
+    dest: /usr/local/src/gpu-unlock
+    version: 7eb51bccae0a0b7e599e084d971170e9a1e82d0c
+
+- name: Check for built GPU unlock packages
+  ansible.builtin.stat:
+    path: "/usr/local/src/gpu-unlock/build/deb/gpu-unlock-{{ item }}_2.0.0_all.deb"
+  loop:
+    - firmware
+    - dkms
+  register: gpu_unlock_packages
+
+- name: Build GPU unlock packages
+  ansible.builtin.command: make deb
+  args:
+    chdir: /usr/local/src/gpu-unlock
+  when: gpu_unlock_packages.results | selectattr('stat.exists', 'equalto', false) | list | length > 0
+  changed_when: true
+
+- name: Install GPU unlock packages
+  ansible.builtin.apt:
+    deb: "/usr/local/src/gpu-unlock/build/deb/gpu-unlock-{{ item }}_2.0.0_all.deb"
+    state: present
+  loop:
+    - firmware
+    - dkms
+  register: gpu_unlock_installed
+
+- name: Check GPU unlock module for the running kernel
+  ansible.builtin.command:
+    argv:
+      - modinfo
+      - -k
+      - "{{ ansible_facts.kernel }}"
+      - gpu_unlock
+  changed_when: false
+
+- name: Inspect the running kernel's initramfs
+  ansible.builtin.command:
+    argv:
+      - lsinitrd
+      - "/boot/initrd.img-{{ ansible_facts.kernel }}"
+  register: gpu_unlock_initramfs
+  changed_when: false
+
+- name: Require GPU unlock module in initramfs
+  ansible.builtin.assert:
+    that:
+      - gpu_unlock_initramfs.stdout is search('gpu_unlock\\.ko(\\.(zst|xz|gz))?')
+    fail_msg: GPU unlock module is missing from initramfs; boot configuration was not changed.
+
+- name: Require RTX 3060 firmware in initramfs
+  ansible.builtin.assert:
+    that:
+      - "'gpu-unlock/610.43.03/' ~ item in gpu_unlock_initramfs.stdout"
+    fail_msg: "GPU unlock firmware {{ item }} is missing from initramfs; boot configuration was not changed."
+  loop:
+    - gsp_ga10x.bin
+    - gsp_boot_ga102.bin
+    - gsp_boot_desc_ga102.bin
+    - booter_load_ga102.bin
+
+- name: Create GRUB configuration directory
+  ansible.builtin.file:
+    path: /etc/default/grub.d
+    state: directory
+    mode: "0755"
+
+- name: Configure GPU unlock for supported GPUs at boot
+  ansible.builtin.copy:
+    dest: /etc/default/grub.d/99-kuzco-gpu-unlock.cfg
+    mode: "0644"
+    content: |
+      GRUB_CMDLINE_LINUX_DEFAULT="${GRUB_CMDLINE_LINUX_DEFAULT:-} gpu_unlock.targets=all"
+  register: gpu_unlock_boot_config
+  notify: Update GRUB for GPU unlock

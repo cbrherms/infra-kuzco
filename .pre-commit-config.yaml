@@ -15,12 +15,12 @@ repos:
         exclude: '\.enc\.'
       - id: shellcheck
         name: shellcheck
-        entry: shellcheck
+        entry: mise exec -- shellcheck
         language: system
         types: [shell]
       - id: ansible-lint
         name: ansible-lint
-        entry: ansible-lint ansible
+        entry: mise exec -- ansible-lint ansible
         language: system
         pass_filenames: false
         files: ^ansible/
