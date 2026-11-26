@@ -48,6 +48,7 @@ From the workstation, in this repo:
 | `just update` | Pull changes locally and provision the host |
 | `just logs` | Follow Doco-CD logs |
 | `just gpu-info` | Run `nvidia-smi` on the host |
+| `just llmfit` | Browse model fit estimates in a temporary container on the host |
 | `just secret-edit <file>` | Edit a SOPS-encrypted file |
 | `just encrypt` | Encrypt plaintext `*.enc.*` files |
 | `just lint` | Run the pre-commit checks |
@@ -69,6 +70,11 @@ including model-management operations.
 Ollama has access to both GPUs and chooses model placement. Inference settings
 use Ollama defaults, cloud features are disabled, and models are pulled
 manually.
+
+`just llmfit` opens a temporary GPU-enabled llmfit container over SSH without
+starting its web dashboard. Its settings and downloads are not persisted, and
+the container does not automatically connect to Ollama. Fit and throughput
+figures are estimates; verify model placement and performance on Kuzco.
 
 Arcane has direct Docker socket access, effectively host-administrator access.
 Its direct HTTP port is not protected by Traefik's TLS.

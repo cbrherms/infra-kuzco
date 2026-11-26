@@ -38,6 +38,10 @@ logs:
 gpu-info:
     {{ssh}} 'nvidia-smi'
 
+# Browse model fit estimates in a temporary GPU-enabled container on Kuzco
+llmfit:
+    ssh -t {{user}}@{{host}} 'docker run --rm -it --gpus all ghcr.io/alexsjones/llmfit:1.1.21 --tui --no-dashboard'
+
 # Create the age key (once) and write .sops.yaml; back the key up in 1Password
 age-init:
     mkdir -p "$(dirname "$SOPS_AGE_KEY_FILE")"
