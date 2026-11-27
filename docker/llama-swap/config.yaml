@@ -11,10 +11,50 @@ models:
       --host 127.0.0.1
       --port ${PORT}
       --model /models/Qwen3.8-27B-UD-Q4_K_M.gguf
+      --split-mode tensor
       --ctx-size 32768
       --n-gpu-layers 999
+      --flash-attn on
       --cache-type-k q8_0
       --cache-type-v q8_0
+      --spec-type draft-mtp
+      --spec-draft-n-max 3
+      --parallel 1
+      --jinja
+    ttl: 600
+
+  qwen3.8-27b-safe:
+    cmd: |
+      llama-server
+      --host 127.0.0.1
+      --port ${PORT}
+      --model /models/Qwen3.8-27B-UD-Q4_K_M.gguf
+      --split-mode layer
+      --ctx-size 32768
+      --n-gpu-layers 999
+      --flash-attn on
+      --cache-type-k q8_0
+      --cache-type-v q8_0
+      --spec-type draft-mtp
+      --spec-draft-n-max 3
+      --parallel 1
+      --jinja
+    ttl: 600
+
+  qwen3.8-27b-xl:
+    cmd: |
+      llama-server
+      --host 127.0.0.1
+      --port ${PORT}
+      --model /models/Qwen3.8-27B-UD-Q4_K_XL.gguf
+      --split-mode tensor
+      --ctx-size 32768
+      --n-gpu-layers 999
+      --flash-attn on
+      --cache-type-k q8_0
+      --cache-type-v q8_0
+      --spec-type draft-mtp
+      --spec-draft-n-max 3
       --parallel 1
       --jinja
     ttl: 600

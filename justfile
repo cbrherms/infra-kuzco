@@ -42,9 +42,10 @@ gpu-info:
 llmfit:
     ssh -t {{user}}@{{host}} 'docker run --rm -it --gpus all ghcr.io/alexsjones/llmfit:1.1.21 --tui --no-dashboard'
 
-# Download the pinned Unsloth GGUF into llama-swap's model directory
-llama-model-download:
-    {{ssh}} 'bash -s' < scripts/download-qwen-gguf.sh
+# Download a Hugging Face file to the model filesystem on Kuzco
+[positional-arguments]
+hf-download repo filename *options:
+    printf '%s\0' "$@" | {{ssh}} 'bash -c '\''set -euo pipefail; mapfile -d "" -t args; mountpoint -q /srv/models || { echo "Model filesystem is not mounted" >&2; exit 1; }; . /etc/profile.d/huggingface.sh; exec hf download "${args[@]}" --local-dir /srv/models/llama-swap'\'''
 
 # Create the age key (once) and write .sops.yaml; back the key up in 1Password
 age-init:

@@ -3,6 +3,7 @@ services:
     image: ghcr.io/mostlygeek/llama-swap:unified-cuda-276@sha256:5744069cc54797594034ddfa1b206d2b4338e027f4c13d106b67c3759702bf57
     container_name: llama-swap
     restart: unless-stopped
+    shm_size: 2gb
     security_opt:
       - no-new-privileges:true
     logging:

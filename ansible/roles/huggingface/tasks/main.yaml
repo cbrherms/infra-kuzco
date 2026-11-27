@@ -1,0 +1,15 @@
+---
+- name: Install Hugging Face CLI
+  ansible.builtin.apt:
+    name: python3-huggingface-hub
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Place Hugging Face download caches on the model filesystem
+  ansible.builtin.copy:
+    dest: /etc/profile.d/huggingface.sh
+    mode: "0644"
+    content: |
+      export HF_HUB_CACHE="{{ models_mount_path }}/llama-swap/.cache/huggingface/hub"
+      export HF_XET_CACHE="{{ models_mount_path }}/llama-swap/.cache/huggingface/xet"

@@ -6,6 +6,8 @@
     - common
     - role: storage
       tags: [storage]
+    - role: huggingface
+      tags: [huggingface]
     - gpu
     - docker
     - dococd

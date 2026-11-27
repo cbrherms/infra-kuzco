@@ -35,8 +35,8 @@ From the workstation, in this repo:
    with `--ask-pass`.
 5. Reboot if required, then run `just gpu-info` and check the persistence
    daemon. The GPU role does not fail if the daemon fails to start or restart.
-6. Check Doco-CD logs and Arcane login, then run `just llama-model-download`
-   and verify GPU access and llama-swap's API from a network client.
+6. Check Doco-CD logs and Arcane login, download the model as described below,
+   then verify GPU access and llama-swap's API from a network client.
 
 | Command | Action |
 |---|---|
@@ -49,7 +49,7 @@ From the workstation, in this repo:
 | `just logs` | Follow Doco-CD logs |
 | `just gpu-info` | Run `nvidia-smi` on the host |
 | `just llmfit` | Browse model fit estimates in a temporary container on the host |
-| `just llama-model-download` | Download and verify the configured Unsloth GGUF on the host |
+| `just hf-download <repo> <filename>` | Download a Hugging Face file to Kuzco |
 | `just secret-edit <file>` | Edit a SOPS-encrypted file |
 | `just encrypt` | Encrypt plaintext `*.enc.*` files |
 | `just lint` | Run the pre-commit checks |
@@ -64,8 +64,11 @@ From the workstation, in this repo:
 | Arcane | HTTP port 3552; `https://arcane-kuzco.lan.${SECRET_DOMAIN}` | Docker GUI; persistent Compose configuration stays in Git |
 
 - llama-swap model settings live in `docker/llama-swap/config.yaml`; the
-  initial model is text-only. `just llama-model-download` downloads and
-  verifies its GGUF; rerun it to resume an interrupted download.
+  initial model is text-only.
+- `qwen3.8-27b` uses experimental tensor splitting; select
+  `qwen3.8-27b-safe` for layer splitting. Switching is manual, not automatic
+  failover.
+- `qwen3.8-27b-xl` is an optional tensor-split Q4_K_XL test model.
 - `just llmfit` uses a temporary container: settings and downloads are not
   persisted, and fit estimates need verification.
 
@@ -84,6 +87,16 @@ console recovery available for boot changes.
   The role does not shrink volumes or resize partitions.
 - Traefik and Arcane use Docker volumes on the OS disk.
 - Secrets use SOPS + age and are decrypted by Doco-CD.
+
+To download the default model from the workstation:
+
+```sh
+just hf-download unsloth/Qwen3.8-27B-GGUF Qwen3.8-27B-UD-Q4_K_M.gguf \
+  --revision 4af51b3542f775b0a8e4b310bfb3f17e01c306c9
+```
+
+Additional `hf download` options can be passed through. Ubuntu's package falls
+back to HTTP downloads when `hf_xet` is unavailable; update it through the system package manager.
 
 ## Updates
 
